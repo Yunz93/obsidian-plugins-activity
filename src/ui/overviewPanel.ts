@@ -11,7 +11,7 @@ import {
   type SortDirection,
 } from "../types/usage";
 
-const SELF_PLUGIN_ID = "extensions-activity";
+const SELF_PLUGIN_ID = "plugins-activity";
 
 const SORTABLE_COLUMNS: SortColumn[] = [
   "name",

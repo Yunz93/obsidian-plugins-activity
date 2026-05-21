@@ -1,4 +1,4 @@
-const SELF_PLUGIN_ID = "extensions-activity";
+const SELF_PLUGIN_ID = "plugins-activity";
 const DEDUP_WINDOW_MS = 100;
 
 export type ActivityKind = "command" | "interaction";

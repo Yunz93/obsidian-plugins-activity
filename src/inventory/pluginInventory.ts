@@ -2,7 +2,7 @@ import type { App } from "obsidian";
 import { getSortLocale } from "../i18n";
 import { viewTypeMatchesPlugin, type InventoryMaps, type PluginSnapshot } from "../types/usage";
 
-const SELF_PLUGIN_ID = "extensions-activity";
+const SELF_PLUGIN_ID = "plugins-activity";
 
 async function listInstalledCommunityPluginIds(app: App): Promise<Set<string>> {
   const pluginDir = `${app.vault.configDir}/plugins`;
