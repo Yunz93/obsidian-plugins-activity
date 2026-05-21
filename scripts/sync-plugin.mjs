@@ -10,11 +10,11 @@ const artifacts = ["main.js", "manifest.json", "styles.css"];
 const destinations = [
   join(
     homedir(),
-    "Library/Mobile Documents/iCloud~md~obsidian/Documents/.obsidian/plugins/plugins-activity",
+    "Library/Mobile Documents/iCloud~md~obsidian/Documents/.obsidian/plugins/extensions-activity",
   ),
   join(
     homedir(),
-    "Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/.obsidian/plugins/plugins-activity",
+    "Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/.obsidian/plugins/extensions-activity",
   ),
 ];
 

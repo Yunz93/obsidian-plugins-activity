@@ -1,4 +1,4 @@
-# Plugins Activity
+# Extensions-Activity
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
@@ -6,7 +6,7 @@
 
 ![image](./src/image/cover-zh.png)
 
-**Plugins Activity** 帮你了解自己在 Obsidian 里实际如何使用第三方插件。它会在本地记录使用情况，并在一个清晰的总览页中展示——让你知道哪些插件是日常刚需、哪些很少打开、哪些可以考虑停用。
+**Extensions-Activity** 帮你了解自己在实际工作中如何使用第三方社区扩展。它会在本地记录使用情况，并在一个清晰的总览页中展示——让你知道哪些插件是日常刚需、哪些很少打开、哪些可以考虑停用。
 
 所有数据只保存在本地，不会上传。
 
@@ -34,7 +34,7 @@
 
 ## 设置项
 
-位于 **设置 → Plugins Activity**：
+位于 **设置 → Extensions-Activity**：
 
 
 | 设置       | 作用                   |

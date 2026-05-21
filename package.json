@@ -1,6 +1,6 @@
 {
-  "name": "plugins-activity",
-  "version": "0.1.1",
+  "name": "extensions-activity",
+  "version": "0.1.2",
   "description": "Obsidian 插件：本地统计第三方插件使用情况。",
   "main": "main.js",
   "scripts": {

@@ -6,7 +6,7 @@ const PLUGIN_DIR =
   process.argv[2] ??
   `${process.env.HOME}/Library/Mobile Documents/iCloud~md~obsidian/Documents/Obsidian/.obsidian/plugins`;
 
-const SKIP = new Set(["plugins-activity"]);
+const SKIP = new Set(["extensions-activity"]);
 const DELEGATED_PLUGIN_IDS = new Set([
   "quick-explorer",
   "tag-wrangler",

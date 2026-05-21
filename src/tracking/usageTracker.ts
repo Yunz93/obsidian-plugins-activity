@@ -17,7 +17,7 @@ import {
   uninstallGlobalTrackingHooks,
 } from "./pluginApiHooks";
 
-const SELF_PLUGIN_ID = "plugins-activity";
+const SELF_PLUGIN_ID = "extensions-activity";
 
 export class UsageTracker {
   private inventory: InventoryMaps | null = null;

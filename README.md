@@ -1,4 +1,4 @@
-# Plugins Activity
+# Extensions-Activity
 
 [English](./README.md) | [简体中文](./README.zh-CN.md)
 
@@ -6,7 +6,7 @@
 
 ![image](./src/image/cover-en.png)
 
-**Plugins Activity** helps you understand how you actually use third-party Obsidian plugins. It records local usage over time and shows everything in one clear overview — so you can see which plugins you rely on, which ones you rarely touch, and which ones might be worth disabling.
+**Extensions-Activity** helps you understand how you actually use third-party community extensions. It records local usage over time and shows everything in one clear overview — so you can see which plugins you rely on, which ones you rarely touch, and which ones might be worth disabling.
 
 All data stays on your device. Nothing is uploaded.
 
@@ -34,7 +34,7 @@ Inside the overview, you can search plugins, sort the table, refresh the list, o
 
 ## Settings
 
-Find these under **Settings → Plugins Activity**:
+Find these under **Settings → Extensions-Activity**:
 
 
 | Setting                  | What it does                                                  |
