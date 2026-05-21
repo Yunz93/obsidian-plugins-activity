@@ -4,7 +4,7 @@
 
 [License: MIT](./LICENSE)
 
-
+![image](./src/image/cover-en.png)
 
 **Obsidian Plugins Activity** helps you understand how you actually use third-party Obsidian plugins. It records local usage over time and shows everything in one clear overview — so you can see which plugins you rely on, which ones you rarely touch, and which ones might be worth disabling.
 
