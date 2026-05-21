@@ -22,7 +22,6 @@ const SORTABLE_COLUMNS: SortColumn[] = [
   "viewOpenCount",
   "lastUsedAt",
   "last7DaysTotal",
-  "anomalyDaysLast7",
 ];
 
 type RegisterDomEvent = <K extends keyof HTMLElementEventMap>(
@@ -132,12 +131,10 @@ export class OverviewPanel {
       .sort((left, right) => right.last7DaysTotal - left.last7DaysTotal)
       .filter((row) => row.last7DaysTotal > 0)
       .slice(0, 5);
-    const anomalyPlugins = this.rows.filter((row) => row.anomalyDaysLast7 > 0).length;
 
     this.createSummaryCard(summary, t("installedPlugins"), String(snapshots.length));
     this.createSummaryCard(summary, t("activeToday"), String(todayActive));
     this.createSummaryCard(summary, t("activityToday"), String(todayTotal));
-    this.createSummaryCard(summary, t("anomalyPluginsLast7"), String(anomalyPlugins));
     this.createTopCard(summary, topPlugins);
   }
 
@@ -262,8 +259,6 @@ export class OverviewPanel {
           return direction * (left.viewOpenCount - right.viewOpenCount);
         case "last7DaysTotal":
           return direction * (left.last7DaysTotal - right.last7DaysTotal);
-        case "anomalyDaysLast7":
-          return direction * (left.anomalyDaysLast7 - right.anomalyDaysLast7);
         case "lastUsedAt": {
           const leftValue = left.lastUsedAt ?? 0;
           const rightValue = right.lastUsedAt ?? 0;
@@ -280,14 +275,13 @@ export class OverviewPanel {
       column === "commandCount" ||
       column === "interactionCount" ||
       column === "viewOpenCount" ||
-      column === "last7DaysTotal" ||
-      column === "anomalyDaysLast7"
+      column === "last7DaysTotal"
     );
   }
 
-  private createNumberCell(row: HTMLTableRowElement, value: number, cls?: string): void {
+  private createNumberCell(row: HTMLTableRowElement, value: number): void {
     row.createEl("td", {
-      cls: `obsidian-plugins-activity-table-number${cls ? ` ${cls}` : ""}`,
+      cls: "obsidian-plugins-activity-table-number",
       text: String(value),
     });
   }
@@ -320,11 +314,6 @@ export class OverviewPanel {
     this.createNumberCell(tr, row.viewOpenCount);
     tr.createEl("td", { text: formatRelativeTime(row.lastUsedAt) });
     this.createNumberCell(tr, row.last7DaysTotal);
-    this.createNumberCell(
-      tr,
-      row.anomalyDaysLast7,
-      row.anomalyDaysLast7 > 0 ? "obsidian-plugins-activity-anomaly-count" : undefined,
-    );
 
     const actionsCell = tr.createEl("td");
     const actions = actionsCell.createDiv({ cls: "obsidian-plugins-activity-row-actions" });

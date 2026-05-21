@@ -1,6 +1,5 @@
 import type { PluginActivitySettings } from "../settings/settings";
 import {
-  countAnomalyDays,
   createEmptyStats,
   formatDateKey,
   normalizeUsageStats,
@@ -105,7 +104,6 @@ export class UsageStore {
           interactionCount: stats.interactionCount,
           lastUsedAt: stats.lastUsedAt,
           last7DaysTotal: sumDailyUsage(stats.daily, 7),
-          anomalyDaysLast7: countAnomalyDays(stats.daily, 7),
           trackingSupported: true,
         };
       });

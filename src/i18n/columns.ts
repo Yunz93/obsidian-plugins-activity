@@ -10,7 +10,6 @@ const COLUMN_KEYS: Record<SortColumn, Parameters<typeof t>[0]> = {
   viewOpenCount: "columnViewOpenCount",
   lastUsedAt: "columnLastUsedAt",
   last7DaysTotal: "columnLast7DaysTotal",
-  anomalyDaysLast7: "columnAnomalyDaysLast7",
 };
 
 export function getColumnLabel(column: SortColumn): string {

@@ -28,7 +28,6 @@ export interface PluginUsageRow extends PluginSnapshot {
   interactionCount: number;
   lastUsedAt: number | null;
   last7DaysTotal: number;
-  anomalyDaysLast7: number;
   trackingSupported: boolean;
 }
 
@@ -40,8 +39,7 @@ export type SortColumn =
   | "viewOpenCount"
   | "interactionCount"
   | "lastUsedAt"
-  | "last7DaysTotal"
-  | "anomalyDaysLast7";
+  | "last7DaysTotal";
 
 export type SortDirection = "asc" | "desc";
 
@@ -109,56 +107,6 @@ export function sumDailyUsage(
     }
   }
   return total;
-}
-
-export function totalDailyUsage(entry: DailyUsage | undefined): number {
-  if (!entry) {
-    return 0;
-  }
-
-  return entry.commands + entry.views + entry.interactions;
-}
-
-export function countAnomalyDays(
-  daily: Record<string, DailyUsage>,
-  days: number,
-  referenceDate: Date = new Date(),
-): number {
-  const baselineDays = 7;
-  const minimumDailyActivity = 10;
-  const minimumDelta = 6;
-  const spikeMultiplier = 3;
-  let anomalyDays = 0;
-
-  for (let offset = 0; offset < days; offset += 1) {
-    const date = new Date(referenceDate);
-    date.setDate(referenceDate.getDate() - offset);
-    const currentTotal = totalDailyUsage(daily[formatDateKey(date)]);
-
-    if (currentTotal < minimumDailyActivity) {
-      continue;
-    }
-
-    let baselineTotal = 0;
-    for (let baselineOffset = offset + 1; baselineOffset <= offset + baselineDays; baselineOffset += 1) {
-      const baselineDate = new Date(referenceDate);
-      baselineDate.setDate(referenceDate.getDate() - baselineOffset);
-      baselineTotal += totalDailyUsage(daily[formatDateKey(baselineDate)]);
-    }
-
-    const baselineAverage = baselineTotal / baselineDays;
-    const threshold = Math.max(
-      baselineAverage * spikeMultiplier,
-      baselineAverage + minimumDelta,
-      minimumDailyActivity,
-    );
-
-    if (currentTotal >= threshold) {
-      anomalyDays += 1;
-    }
-  }
-
-  return anomalyDays;
 }
 
 export function resolvePluginFromCommandId(

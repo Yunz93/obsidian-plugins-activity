@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest";
 import {
-  countAnomalyDays,
   normalizeUsageStats,
   resolvePluginFromCommandId,
   sumDailyUsage,
@@ -39,37 +38,6 @@ describe("usage helpers", () => {
     );
 
     expect(total).toBe(6);
-  });
-
-  it("counts recent activity spikes as anomaly days", () => {
-    const anomalyDays = countAnomalyDays(
-      {
-        "2026-05-14": { commands: 2, views: 1, interactions: 0 },
-        "2026-05-15": { commands: 1, views: 1, interactions: 1 },
-        "2026-05-16": { commands: 2, views: 0, interactions: 1 },
-        "2026-05-17": { commands: 1, views: 2, interactions: 0 },
-        "2026-05-18": { commands: 1, views: 1, interactions: 0 },
-        "2026-05-19": { commands: 2, views: 1, interactions: 0 },
-        "2026-05-20": { commands: 1, views: 0, interactions: 1 },
-        "2026-05-21": { commands: 9, views: 5, interactions: 4 },
-      },
-      7,
-      new Date("2026-05-21T12:00:00"),
-    );
-
-    expect(anomalyDays).toBe(1);
-  });
-
-  it("does not count low-volume activity as anomalous", () => {
-    const anomalyDays = countAnomalyDays(
-      {
-        "2026-05-21": { commands: 4, views: 2, interactions: 1 },
-      },
-      7,
-      new Date("2026-05-21T12:00:00"),
-    );
-
-    expect(anomalyDays).toBe(0);
   });
 
   it("resolves only known third-party command prefixes", () => {
