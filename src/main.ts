@@ -56,7 +56,7 @@ export default class PluginsActivityPlugin extends Plugin {
       this.overviewRefreshTimer = null;
     }
     void this.usageStore?.flush().catch((error) => {
-      console.error("Plugins Activity failed to save usage data while unloading.", error);
+      console.error("Obsidian Plugins Activity failed to save usage data while unloading.", error);
     });
     this.overviewModal?.close();
     this.overviewModal = null;
@@ -118,7 +118,7 @@ export default class PluginsActivityPlugin extends Plugin {
   }
 
   private closeLegacyOverviewLeaves(): void {
-    for (const leaf of this.app.workspace.getLeavesOfType("plugins-activity-overview")) {
+    for (const leaf of this.app.workspace.getLeavesOfType("obsidian-plugins-activity-overview")) {
       leaf.detach();
     }
   }

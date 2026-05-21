@@ -14,7 +14,7 @@ export class PluginActivitySettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Plugins Activity 设置" });
+    containerEl.createEl("h2", { text: "Obsidian Plugins Activity 设置" });
     containerEl.createEl("p", {
       cls: "setting-item-description",
       text: "所有统计数据仅保存在本地 vault 中，不会上传到任何服务器。",

@@ -18,8 +18,8 @@ export class OverviewModal extends Modal {
   }
 
   onOpen(): void {
-    this.modalEl.addClass("mod-plugins-activity-modal");
-    this.contentEl.addClass("plugins-activity-overview");
+    this.modalEl.addClass("mod-obsidian-plugins-activity-modal");
+    this.contentEl.addClass("obsidian-plugins-activity-overview");
     void this.panel.refresh(this.contentEl);
   }
 

@@ -10,7 +10,7 @@ import {
 } from "../types/usage";
 import { isTrackingSupported, getTrackingUnsupportedReason } from "../tracking/trackability";
 
-const SELF_PLUGIN_ID = "plugins-activity";
+const SELF_PLUGIN_ID = "obsidian-plugins-activity";
 
 const SORTABLE_COLUMNS: SortColumn[] = [
   "name",
@@ -60,7 +60,7 @@ export class OverviewPanel {
 
   render(root: HTMLElement): void {
     root.empty();
-    root.addClass("plugins-activity-overview");
+    root.addClass("obsidian-plugins-activity-overview");
 
     this.rows = this.plugin.usageStore
       .getMergedRows(
@@ -82,15 +82,15 @@ export class OverviewPanel {
   }
 
   private renderToolbar(root: HTMLElement): void {
-    const toolbar = root.createDiv({ cls: "plugins-activity-toolbar" });
-    const heading = toolbar.createDiv({ cls: "plugins-activity-heading" });
+    const toolbar = root.createDiv({ cls: "obsidian-plugins-activity-toolbar" });
+    const heading = toolbar.createDiv({ cls: "obsidian-plugins-activity-heading" });
     heading.createEl("h2", { text: "第三方插件活动" });
-    heading.createDiv({ cls: "plugins-activity-heading-meta", text: "本地统计" });
+    heading.createDiv({ cls: "obsidian-plugins-activity-heading-meta", text: "本地统计" });
 
-    const actions = toolbar.createDiv({ cls: "plugins-activity-toolbar-actions" });
+    const actions = toolbar.createDiv({ cls: "obsidian-plugins-activity-toolbar-actions" });
 
     const search = actions.createEl("input", {
-      cls: "plugins-activity-search",
+      cls: "obsidian-plugins-activity-search",
       type: "search",
       placeholder: "搜索插件名、ID、作者…",
     });
@@ -127,7 +127,7 @@ export class OverviewPanel {
   }
 
   private renderSummary(root: HTMLElement): void {
-    const summary = root.createDiv({ cls: "plugins-activity-summary" });
+    const summary = root.createDiv({ cls: "obsidian-plugins-activity-summary" });
     const snapshots = this.plugin.usageTracker.getInventory().snapshots;
     let todayTotal = 0;
     const todayActive = snapshots.filter((snapshot) => {
@@ -153,60 +153,60 @@ export class OverviewPanel {
     label: string,
     value: string,
   ): void {
-    const card = parent.createDiv({ cls: "plugins-activity-summary-card plugins-activity-summary-stat" });
+    const card = parent.createDiv({ cls: "obsidian-plugins-activity-summary-card obsidian-plugins-activity-summary-stat" });
     card.createDiv({ cls: "label", text: label });
-    const body = card.createDiv({ cls: "plugins-activity-summary-body" });
+    const body = card.createDiv({ cls: "obsidian-plugins-activity-summary-body" });
     body.createDiv({ cls: "value", text: value });
   }
 
   private createTopCard(parent: HTMLElement, topPlugins: PluginUsageRow[]): void {
     const card = parent.createDiv({
-      cls: "plugins-activity-summary-card plugins-activity-summary-top",
+      cls: "obsidian-plugins-activity-summary-card obsidian-plugins-activity-summary-top",
     });
     card.createDiv({ cls: "label", text: "近 7 日最常用" });
-    const body = card.createDiv({ cls: "plugins-activity-summary-body" });
+    const body = card.createDiv({ cls: "obsidian-plugins-activity-summary-body" });
 
     if (topPlugins.length === 0) {
       body.createDiv({ cls: "sub", text: "暂无使用记录" });
       return;
     }
 
-    const list = body.createEl("ol", { cls: "plugins-activity-top-list" });
+    const list = body.createEl("ol", { cls: "obsidian-plugins-activity-top-list" });
     const maxTotal = Math.max(...topPlugins.map((row) => row.last7DaysTotal), 1);
     for (const row of topPlugins) {
       const item = list.createEl("li");
       item.style.setProperty(
-        "--plugins-activity-ratio",
+        "--obsidian-plugins-activity-ratio",
         `${Math.max(8, Math.round((row.last7DaysTotal / maxTotal) * 100))}%`,
       );
-      item.createSpan({ cls: "plugins-activity-top-name", text: row.name });
-      item.createSpan({ cls: "plugins-activity-top-count", text: `${row.last7DaysTotal} 次` });
+      item.createSpan({ cls: "obsidian-plugins-activity-top-name", text: row.name });
+      item.createSpan({ cls: "obsidian-plugins-activity-top-count", text: `${row.last7DaysTotal} 次` });
     }
   }
 
   private renderTable(root: HTMLElement): void {
-    const existing = root.querySelector(".plugins-activity-table-wrap");
+    const existing = root.querySelector(".obsidian-plugins-activity-table-wrap");
     existing?.remove();
 
-    const wrap = root.createDiv({ cls: "plugins-activity-table-wrap" });
+    const wrap = root.createDiv({ cls: "obsidian-plugins-activity-table-wrap" });
     const filteredRows = this.getFilteredRows();
 
     if (filteredRows.length === 0) {
       wrap.createDiv({
-        cls: "plugins-activity-empty",
+        cls: "obsidian-plugins-activity-empty",
         text: this.searchQuery ? "没有匹配的插件。" : "当前没有可显示的第三方插件。",
       });
       return;
     }
 
-    const table = wrap.createEl("table", { cls: "plugins-activity-table" });
+    const table = wrap.createEl("table", { cls: "obsidian-plugins-activity-table" });
     const thead = table.createEl("thead");
     const headerRow = thead.createEl("tr");
 
     for (const column of SORTABLE_COLUMNS) {
       const th = headerRow.createEl("th");
       if (this.isNumericColumn(column)) {
-        th.addClass("plugins-activity-table-number");
+        th.addClass("obsidian-plugins-activity-table-number");
       }
       th.setText(COLUMN_LABELS[column]);
       const indicator = th.createSpan({ cls: "sort-indicator" });
@@ -287,7 +287,7 @@ export class OverviewPanel {
 
   private createNumberCell(row: HTMLTableRowElement, value: number): void {
     row.createEl("td", {
-      cls: "plugins-activity-table-number",
+      cls: "obsidian-plugins-activity-table-number",
       text: String(value),
     });
   }
@@ -299,18 +299,18 @@ export class OverviewPanel {
     }
 
     const nameCell = tr.createEl("td");
-    nameCell.createDiv({ cls: "plugins-activity-name", text: row.name });
-    nameCell.createDiv({ cls: "plugins-activity-id", text: row.id });
+    nameCell.createDiv({ cls: "obsidian-plugins-activity-name", text: row.name });
+    nameCell.createDiv({ cls: "obsidian-plugins-activity-id", text: row.id });
     if (!row.trackingSupported) {
       nameCell.createDiv({
-        cls: "plugins-activity-trackability-hint",
+        cls: "obsidian-plugins-activity-trackability-hint",
         text: getTrackingUnsupportedReason(row.id),
       });
     }
 
     const statusCell = tr.createEl("td");
     statusCell.createSpan({
-      cls: row.enabled ? "plugins-activity-status is-enabled" : "plugins-activity-status is-disabled",
+      cls: row.enabled ? "obsidian-plugins-activity-status is-enabled" : "obsidian-plugins-activity-status is-disabled",
       text: row.enabled ? "已启用" : "已禁用",
     });
 
@@ -322,7 +322,7 @@ export class OverviewPanel {
     this.createNumberCell(tr, row.last7DaysTotal);
 
     const actionsCell = tr.createEl("td");
-    const actions = actionsCell.createDiv({ cls: "plugins-activity-row-actions" });
+    const actions = actionsCell.createDiv({ cls: "obsidian-plugins-activity-row-actions" });
     const isSelf = row.id === SELF_PLUGIN_ID;
 
     if (!isSelf) {
@@ -334,7 +334,7 @@ export class OverviewPanel {
       });
 
       const uninstallButton = actions.createEl("button", { text: "卸载" });
-      uninstallButton.addClass("plugins-activity-uninstall");
+      uninstallButton.addClass("obsidian-plugins-activity-uninstall");
       this.registerDomEvent(uninstallButton, "click", () => {
         new ConfirmResetModal(
           this.app,
