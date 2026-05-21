@@ -1,9 +1,11 @@
 import { Plugin } from "obsidian";
+import { t } from "./i18n";
 import { DEFAULT_SETTINGS, type PluginActivitySettings } from "./settings/settings";
 import { PluginActivitySettingTab } from "./settings/SettingsTab";
 import { UsageStore } from "./tracking/usageStore";
 import { UsageTracker } from "./tracking/usageTracker";
 import { installGlobalTrackingHooks } from "./tracking/pluginApiHooks";
+
 import { OverviewModal } from "./ui/OverviewModal";
 
 installGlobalTrackingHooks();
@@ -26,13 +28,13 @@ export default class PluginsActivityPlugin extends Plugin {
 
     this.addCommand({
       id: "open-overview",
-      name: "打开插件使用总览",
+      name: t("openOverview"),
       callback: () => {
         this.openOverview();
       },
     });
 
-    this.addRibbonIcon("bar-chart-2", "打开插件使用总览", () => {
+    this.addRibbonIcon("bar-chart-2", t("openOverview"), () => {
       this.openOverview();
     });
 

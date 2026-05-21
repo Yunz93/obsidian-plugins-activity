@@ -1,4 +1,5 @@
 import type { App } from "obsidian";
+import { t } from "../i18n";
 import { DELEGATED_INTERACTION_RULES } from "./delegatedInteractions";
 import { hasTrackableInteraction } from "./trackableSources";
 import type { InventoryMaps } from "../types/usage";
@@ -57,8 +58,8 @@ export function isTrackingSupported(
 
 export function getTrackingUnsupportedReason(pluginId: string): string {
   if (STATIC_UNSUPPORTED_PLUGIN_IDS.has(pluginId)) {
-    return "被动生效，当前方案无法统计日常使用";
+    return t("passiveUnsupported");
   }
 
-  return "无命令/视图/可追踪交互，当前方案无法统计";
+  return t("noTrackableSurface");
 }

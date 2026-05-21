@@ -1,4 +1,5 @@
 import { App, Modal, Setting } from "obsidian";
+import { t } from "../i18n";
 
 export class ConfirmResetModal extends Modal {
   constructor(
@@ -19,7 +20,7 @@ export class ConfirmResetModal extends Modal {
     new Setting(contentEl)
       .addButton((button) =>
         button
-          .setButtonText("确认")
+          .setButtonText(t("confirm"))
           .setWarning()
           .onClick(async () => {
             await this.onConfirm();
@@ -27,7 +28,7 @@ export class ConfirmResetModal extends Modal {
           }),
       )
       .addButton((button) =>
-        button.setButtonText("取消").onClick(() => {
+        button.setButtonText(t("cancel")).onClick(() => {
           this.close();
         }),
       );

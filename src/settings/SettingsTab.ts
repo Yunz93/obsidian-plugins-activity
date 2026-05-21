@@ -1,4 +1,5 @@
 import { App, PluginSettingTab, Setting } from "obsidian";
+import { t } from "../i18n";
 import type PluginsActivityPlugin from "../main";
 import { ConfirmResetModal } from "../ui/ConfirmResetModal";
 
@@ -14,15 +15,15 @@ export class PluginActivitySettingTab extends PluginSettingTab {
     const { containerEl } = this;
     containerEl.empty();
 
-    containerEl.createEl("h2", { text: "Obsidian Plugins Activity 设置" });
+    containerEl.createEl("h2", { text: t("settingsTitle") });
     containerEl.createEl("p", {
       cls: "setting-item-description",
-      text: "所有统计数据仅保存在本地 vault 中，不会上传到任何服务器。",
+      text: t("privacyNote"),
     });
 
     new Setting(containerEl)
-      .setName("启用使用统计")
-      .setDesc("关闭后不再记录新的命令与视图使用数据。")
+      .setName(t("trackingEnabledName"))
+      .setDesc(t("trackingEnabledDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.trackingEnabled)
@@ -33,8 +34,8 @@ export class PluginActivitySettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("数据保留天数")
-      .setDesc("超过该天数的日聚合数据会被自动清理。")
+      .setName(t("retentionDaysName"))
+      .setDesc(t("retentionDaysDesc"))
       .addText((text) =>
         text
           .setPlaceholder("90")
@@ -51,8 +52,8 @@ export class PluginActivitySettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("显示已禁用插件")
-      .setDesc("关闭后，总览页只显示当前启用的第三方插件。")
+      .setName(t("showDisabledPluginsName"))
+      .setDesc(t("showDisabledPluginsDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.showDisabledPlugins)
@@ -64,8 +65,8 @@ export class PluginActivitySettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("启动时打开总览页")
-      .setDesc("Obsidian 启动完成后自动打开插件使用总览。")
+      .setName(t("openOnStartupName"))
+      .setDesc(t("openOnStartupDesc"))
       .addToggle((toggle) =>
         toggle
           .setValue(this.plugin.settings.openOnStartup)
@@ -76,17 +77,17 @@ export class PluginActivitySettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
-      .setName("清空全部统计数据")
-      .setDesc("删除所有插件的命令与视图使用记录，此操作不可撤销。")
+      .setName(t("resetAllName"))
+      .setDesc(t("resetAllDesc"))
       .addButton((button) =>
         button
-          .setButtonText("清空")
+          .setButtonText(t("resetAllButton"))
           .setWarning()
           .onClick(() => {
             new ConfirmResetModal(
               this.app,
-              "清空全部统计数据",
-              "确定要删除所有插件的使用统计吗？",
+              t("resetAllTitle"),
+              t("resetAllMessage"),
               async () => {
                 this.plugin.usageStore.resetAll();
                 await this.plugin.usageStore.flush();

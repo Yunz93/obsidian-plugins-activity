@@ -1,4 +1,5 @@
 import type { App } from "obsidian";
+import { getSortLocale } from "../i18n";
 import { viewTypeMatchesPlugin, type InventoryMaps, type PluginSnapshot } from "../types/usage";
 
 const SELF_PLUGIN_ID = "obsidian-plugins-activity";
@@ -114,7 +115,7 @@ export async function buildPluginInventory(app: App): Promise<InventoryMaps> {
     viewTypeToPluginId.set(viewType, pluginId);
   }
 
-  snapshots.sort((left, right) => left.name.localeCompare(right.name, "zh-CN"));
+  snapshots.sort((left, right) => left.name.localeCompare(right.name, getSortLocale()));
   return {
     commandPrefixToPluginId,
     viewTypeToPluginId,
