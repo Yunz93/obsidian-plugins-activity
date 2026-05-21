@@ -79,7 +79,8 @@ export class OverviewPanel {
 
     const actions = toolbar.createDiv({ cls: "obsidian-plugins-activity-toolbar-actions" });
 
-    const search = actions.createEl("input", {
+    const searchRow = actions.createDiv({ cls: "obsidian-plugins-activity-toolbar-search-row" });
+    const search = searchRow.createEl("input", {
       cls: "obsidian-plugins-activity-search",
       type: "search",
       placeholder: t("searchPlaceholder"),
@@ -90,12 +91,13 @@ export class OverviewPanel {
       this.renderTable(root);
     });
 
-    const refreshButton = actions.createEl("button", { text: t("refresh"), cls: "mod-cta" });
+    const refreshButton = searchRow.createEl("button", { text: t("refresh"), cls: "mod-cta" });
     this.registerDomEvent(refreshButton, "click", () => {
       void this.refresh(root);
     });
 
-    const resetButton = actions.createEl("button", { text: t("reset") });
+    const buttonRow = actions.createDiv({ cls: "obsidian-plugins-activity-toolbar-button-row" });
+    const resetButton = buttonRow.createEl("button", { text: t("reset") });
     this.registerDomEvent(resetButton, "click", () => {
       new ConfirmResetModal(
         this.app,
@@ -109,7 +111,7 @@ export class OverviewPanel {
       ).open();
     });
 
-    const settingsButton = actions.createEl("button", { text: t("settings") });
+    const settingsButton = buttonRow.createEl("button", { text: t("settings") });
     this.registerDomEvent(settingsButton, "click", () => {
       this.app.setting.open();
       this.app.setting.openTabById(this.plugin.manifest.id);
@@ -183,6 +185,7 @@ export class OverviewPanel {
 
     const wrap = root.createDiv({ cls: "obsidian-plugins-activity-table-wrap" });
     const filteredRows = this.getFilteredRows();
+    this.renderMobileSort(wrap, root);
 
     if (filteredRows.length === 0) {
       wrap.createDiv({
@@ -227,6 +230,36 @@ export class OverviewPanel {
     for (const row of this.sortRows(filteredRows)) {
       this.renderRow(tbody, row, root);
     }
+  }
+
+  private renderMobileSort(parent: HTMLElement, root: HTMLElement): void {
+    const bar = parent.createDiv({ cls: "obsidian-plugins-activity-mobile-sort" });
+    bar.createSpan({ cls: "obsidian-plugins-activity-mobile-sort-label", text: t("sortBy") });
+
+    const select = bar.createEl("select", { cls: "obsidian-plugins-activity-mobile-sort-select" });
+    for (const column of SORTABLE_COLUMNS) {
+      const option = select.createEl("option", {
+        value: column,
+        text: getColumnLabel(column),
+      });
+      if (column === this.sortColumn) {
+        option.selected = true;
+      }
+    }
+
+    this.registerDomEvent(select, "change", () => {
+      this.sortColumn = select.value as SortColumn;
+      this.renderTable(root);
+    });
+
+    const directionButton = bar.createEl("button", {
+      cls: "obsidian-plugins-activity-mobile-sort-direction",
+      text: this.sortDirection === "asc" ? "↑" : "↓",
+    });
+    this.registerDomEvent(directionButton, "click", () => {
+      this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
+      this.renderTable(root);
+    });
   }
 
   private getFilteredRows(): PluginUsageRow[] {
@@ -279,11 +312,17 @@ export class OverviewPanel {
     );
   }
 
-  private createNumberCell(row: HTMLTableRowElement, value: number): void {
-    row.createEl("td", {
+  private createNumberCell(
+    row: HTMLTableRowElement,
+    column: SortColumn,
+    value: number,
+  ): void {
+    const cell = row.createEl("td", {
       cls: "obsidian-plugins-activity-table-number",
       text: String(value),
     });
+    cell.dataset.col = column;
+    cell.dataset.label = getColumnLabel(column);
   }
 
   private renderRow(tbody: HTMLElement, row: PluginUsageRow, root: HTMLElement): void {
@@ -293,6 +332,7 @@ export class OverviewPanel {
     }
 
     const nameCell = tr.createEl("td");
+    nameCell.dataset.col = "name";
     nameCell.createDiv({ cls: "obsidian-plugins-activity-name", text: row.name });
     nameCell.createDiv({ cls: "obsidian-plugins-activity-id", text: row.id });
     if (!row.trackingSupported) {
@@ -303,19 +343,26 @@ export class OverviewPanel {
     }
 
     const statusCell = tr.createEl("td");
+    statusCell.dataset.col = "enabled";
+    statusCell.dataset.label = getColumnLabel("enabled");
     statusCell.createSpan({
       cls: row.enabled ? "obsidian-plugins-activity-status is-enabled" : "obsidian-plugins-activity-status is-disabled",
       text: row.enabled ? t("enabled") : t("disabled"),
     });
 
-    tr.createEl("td", { text: row.version });
-    this.createNumberCell(tr, row.commandCount);
-    this.createNumberCell(tr, row.interactionCount);
-    this.createNumberCell(tr, row.viewOpenCount);
-    tr.createEl("td", { text: formatRelativeTime(row.lastUsedAt) });
-    this.createNumberCell(tr, row.last7DaysTotal);
+    const versionCell = tr.createEl("td", { text: row.version });
+    versionCell.dataset.col = "version";
+    versionCell.dataset.label = getColumnLabel("version");
+    this.createNumberCell(tr, "commandCount", row.commandCount);
+    this.createNumberCell(tr, "interactionCount", row.interactionCount);
+    this.createNumberCell(tr, "viewOpenCount", row.viewOpenCount);
+    const lastUsedCell = tr.createEl("td", { text: formatRelativeTime(row.lastUsedAt) });
+    lastUsedCell.dataset.col = "lastUsedAt";
+    lastUsedCell.dataset.label = getColumnLabel("lastUsedAt");
+    this.createNumberCell(tr, "last7DaysTotal", row.last7DaysTotal);
 
     const actionsCell = tr.createEl("td");
+    actionsCell.dataset.col = "actions";
     const actions = actionsCell.createDiv({ cls: "obsidian-plugins-activity-row-actions" });
     const isSelf = row.id === SELF_PLUGIN_ID;
 

@@ -80,6 +80,11 @@
   justify-content: flex-end;
 }
 
+.obsidian-plugins-activity-toolbar-search-row,
+.obsidian-plugins-activity-toolbar-button-row {
+  display: contents;
+}
+
 .obsidian-plugins-activity-search {
   min-width: 220px;
   height: 32px;
@@ -223,19 +228,43 @@
 
 @media (max-width: 720px) {
   .obsidian-plugins-activity-summary {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-auto-rows: auto;
+    gap: 8px;
+    padding: 10px 12px;
     min-height: 0;
-  }
-
-  .obsidian-plugins-activity-summary-card {
-    min-height: 112px;
   }
 
   .obsidian-plugins-activity-summary-stat,
   .obsidian-plugins-activity-summary-top {
     grid-column: span 1;
   }
+
+  .obsidian-plugins-activity-summary-top {
+    grid-column: span 3;
+  }
+
+  .obsidian-plugins-activity-summary-card {
+    min-height: 0;
+    padding: 8px 10px;
+  }
+
+  .obsidian-plugins-activity-summary-stat .value {
+    font-size: 1.35rem;
+  }
+
+  .obsidian-plugins-activity-summary-stat .label {
+    margin-bottom: 4px;
+    font-size: 0.72rem;
+  }
+
+  .obsidian-plugins-activity-summary-stat .obsidian-plugins-activity-summary-body {
+    justify-content: flex-start;
+  }
+}
+
+.obsidian-plugins-activity-mobile-sort {
+  display: none;
 }
 
 .obsidian-plugins-activity-table-wrap {
@@ -429,6 +458,225 @@
   .obsidian-plugins-activity-search {
     flex: 1 1 260px;
     min-width: min(100%, 260px);
+  }
+}
+
+@media (max-width: 720px) {
+  .modal.mod-obsidian-plugins-activity-modal {
+    width: 100vw;
+    max-width: 100vw;
+    height: 100dvh;
+    max-height: 100dvh;
+    margin: 0;
+    border-radius: 0;
+  }
+
+  .modal.mod-obsidian-plugins-activity-modal .modal-content {
+    max-height: calc(100dvh - 40px);
+  }
+
+  .obsidian-plugins-activity-toolbar {
+    padding: 10px 12px;
+    gap: 10px;
+  }
+
+  .obsidian-plugins-activity-toolbar-actions {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .obsidian-plugins-activity-toolbar-search-row,
+  .obsidian-plugins-activity-toolbar-button-row {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .obsidian-plugins-activity-search {
+    flex: 1;
+    min-width: 0;
+    height: 40px;
+  }
+
+  .obsidian-plugins-activity-toolbar-search-row button {
+    flex-shrink: 0;
+    min-height: 40px;
+    min-width: 64px;
+  }
+
+  .obsidian-plugins-activity-toolbar-button-row button {
+    flex: 1;
+    min-height: 40px;
+  }
+
+  .obsidian-plugins-activity-mobile-sort {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    margin-bottom: 10px;
+    padding: 8px 0;
+    background: var(--background-secondary);
+  }
+
+  .obsidian-plugins-activity-mobile-sort-label {
+    flex-shrink: 0;
+    color: var(--pa-muted);
+    font-size: var(--font-ui-smaller);
+    font-weight: 600;
+  }
+
+  .obsidian-plugins-activity-mobile-sort-select {
+    flex: 1;
+    min-width: 0;
+    height: 36px;
+    border-radius: var(--pa-radius-sm);
+  }
+
+  .obsidian-plugins-activity-mobile-sort-direction {
+    flex-shrink: 0;
+    min-width: 40px;
+    min-height: 36px;
+    border-radius: var(--pa-radius-sm);
+  }
+
+  .obsidian-plugins-activity-table-wrap {
+    padding: 0 12px 12px;
+  }
+
+  .obsidian-plugins-activity-table {
+    display: block;
+    border: none;
+    background: transparent;
+  }
+
+  .obsidian-plugins-activity-table thead {
+    display: none;
+  }
+
+  .obsidian-plugins-activity-table tbody {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .obsidian-plugins-activity-table tbody tr {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0;
+    padding: 12px;
+    border: 1px solid var(--pa-border);
+    border-radius: var(--pa-radius);
+    background: var(--pa-card-raised);
+  }
+
+  .obsidian-plugins-activity-table tbody tr:last-child td {
+    border-bottom: none;
+  }
+
+  .obsidian-plugins-activity-table td {
+    display: block;
+    padding: 0;
+    border: none;
+    text-align: left !important;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="name"] {
+    order: 1;
+    width: 100%;
+    padding-right: 72px;
+    margin-bottom: 6px;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="enabled"] {
+    order: 2;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="commandCount"],
+  .obsidian-plugins-activity-table td[data-col="interactionCount"],
+  .obsidian-plugins-activity-table td[data-col="viewOpenCount"] {
+    order: 3;
+    width: calc(33.333% - 6px);
+    margin-top: 8px;
+    padding: 6px 4px;
+    border-radius: var(--pa-radius-sm);
+    background: var(--background-secondary);
+    text-align: center !important;
+    font-size: var(--font-ui-smaller);
+  }
+
+  .obsidian-plugins-activity-table td[data-col="commandCount"]::before,
+  .obsidian-plugins-activity-table td[data-col="interactionCount"]::before,
+  .obsidian-plugins-activity-table td[data-col="viewOpenCount"]::before {
+    content: attr(data-label);
+    display: block;
+    margin-bottom: 2px;
+    color: var(--pa-muted);
+    font-size: 0.68rem;
+    line-height: 1.2;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="version"],
+  .obsidian-plugins-activity-table td[data-col="lastUsedAt"],
+  .obsidian-plugins-activity-table td[data-col="last7DaysTotal"] {
+    order: 4;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    width: 100%;
+    padding: 3px 0;
+    font-size: var(--font-ui-smaller);
+  }
+
+  .obsidian-plugins-activity-table td[data-col="lastUsedAt"] {
+    order: 5;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="last7DaysTotal"] {
+    order: 6;
+  }
+
+  .obsidian-plugins-activity-table td[data-col="version"]::before,
+  .obsidian-plugins-activity-table td[data-col="lastUsedAt"]::before,
+  .obsidian-plugins-activity-table td[data-col="last7DaysTotal"]::before {
+    content: attr(data-label);
+    flex-shrink: 0;
+    color: var(--pa-muted);
+  }
+
+  .obsidian-plugins-activity-table td[data-col="actions"] {
+    order: 7;
+    width: 100%;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid var(--pa-border);
+  }
+
+  .obsidian-plugins-activity-row-actions {
+    justify-content: stretch;
+  }
+
+  .obsidian-plugins-activity-row-actions button {
+    flex: 1;
+    min-height: 40px;
+  }
+
+  .obsidian-plugins-activity-trackability-hint {
+    margin-top: 6px;
+    font-size: 0.68rem;
   }
 }
 
