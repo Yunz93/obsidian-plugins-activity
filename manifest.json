@@ -1,0 +1,10 @@
+{
+  "id": "plugins-activity",
+  "name": "Plugins Activity",
+  "version": "0.1.0",
+  "minAppVersion": "1.5.0",
+  "description": "本地统计 Obsidian 第三方插件的命令与视图使用情况，并提供总览页。",
+  "author": "Yunz",
+  "authorUrl": "",
+  "isDesktopOnly": false
+}
