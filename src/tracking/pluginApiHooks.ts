@@ -20,7 +20,7 @@ import {
   markTrackableInteraction,
 } from "./trackableSources";
 
-const SELF_PLUGIN_ID = "obsidian-plugins-activity";
+const SELF_PLUGIN_ID = "plugins-activity";
 
 const INTERACTIVE_DOM_EVENTS = new Set<string>([
   "click",

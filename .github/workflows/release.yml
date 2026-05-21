@@ -73,7 +73,7 @@ jobs:
         run: |
           mkdir -p dist
           cp main.js manifest.json styles.css versions.json dist/
-          cd dist && zip -r ../obsidian-plugins-activity.zip .
+          cd dist && zip -r ../plugins-activity.zip .
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -84,4 +84,4 @@ jobs:
             dist/manifest.json
             dist/styles.css
             dist/versions.json
-            obsidian-plugins-activity.zip
+            plugins-activity.zip

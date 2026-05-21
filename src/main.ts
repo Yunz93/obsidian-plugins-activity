@@ -58,7 +58,7 @@ export default class PluginsActivityPlugin extends Plugin {
       this.overviewRefreshTimer = null;
     }
     void this.usageStore?.flush().catch((error) => {
-      console.error("Obsidian Plugins Activity failed to save usage data while unloading.", error);
+      console.error("Plugins Activity failed to save usage data while unloading.", error);
     });
     this.overviewModal?.close();
     this.overviewModal = null;

@@ -198,7 +198,7 @@ export class UsageStore {
 
   private flushSoon(): void {
     void this.flush().catch((error) => {
-      console.error("Obsidian Plugins Activity failed to save usage data.", error);
+      console.error("Plugins Activity failed to save usage data.", error);
     });
   }
 }
