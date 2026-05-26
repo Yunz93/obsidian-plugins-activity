@@ -1,6 +1,7 @@
 import { Plugin } from "obsidian";
 import { t } from "./i18n";
 import { DEFAULT_SETTINGS, type PluginActivitySettings } from "./settings/settings";
+import { openPluginSettings } from "./settings/openPluginSettings";
 import { PluginActivitySettingTab } from "./settings/SettingsTab";
 import { UsageStore } from "./tracking/usageStore";
 import { UsageTracker } from "./tracking/usageTracker";
@@ -117,6 +118,12 @@ export default class PluginsActivityPlugin extends Plugin {
 
     this.overviewModal = new OverviewModal(this);
     this.overviewModal.open();
+  }
+
+  openSettings(): void {
+    openPluginSettings(this.app.setting, this.manifest.id, () => {
+      this.overviewModal?.close();
+    });
   }
 
   private closeLegacyOverviewLeaves(): void {

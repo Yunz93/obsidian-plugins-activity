@@ -113,8 +113,7 @@ export class OverviewPanel {
 
     const settingsButton = buttonRow.createEl("button", { text: t("settings") });
     this.registerDomEvent(settingsButton, "click", () => {
-      this.app.setting.open();
-      this.app.setting.openTabById(this.plugin.manifest.id);
+      this.plugin.openSettings();
     });
   }
 
