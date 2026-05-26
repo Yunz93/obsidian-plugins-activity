@@ -34,6 +34,18 @@ export class PluginActivitySettingTab extends PluginSettingTab {
       );
 
     new Setting(containerEl)
+      .setName(t("excludeRenderActivitiesName"))
+      .setDesc(t("excludeRenderActivitiesDesc"))
+      .addToggle((toggle) =>
+        toggle
+          .setValue(this.plugin.settings.excludeRenderActivities)
+          .onChange(async (value) => {
+            this.plugin.settings.excludeRenderActivities = value;
+            await this.plugin.saveSettings();
+          }),
+      );
+
+    new Setting(containerEl)
       .setName(t("retentionDaysName"))
       .setDesc(t("retentionDaysDesc"))
       .addText((text) =>

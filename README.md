@@ -40,6 +40,7 @@ Find these under **Settings → Extensions-Activity**:
 | Setting                  | What it does                                                  |
 | ------------------------ | ------------------------------------------------------------- |
 | Enable tracking          | Turn usage recording on or off                                |
+| Exclude render activities | Do not count Markdown render processors as plugin activity    |
 | Retention days           | Remove daily records older than the number of days you choose |
 | Show disabled plugins    | Include disabled third-party plugins in the overview          |
 | Open overview on startup | Automatically open the overview when Obsidian starts          |

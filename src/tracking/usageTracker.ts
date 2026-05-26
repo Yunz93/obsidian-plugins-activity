@@ -37,6 +37,10 @@ export class UsageTracker {
         return;
       }
 
+      if (kind === "render" && this.plugin.settings.excludeRenderActivities) {
+        return;
+      }
+
       if (kind === "command") {
         this.plugin.usageStore.recordCommand(pluginId);
         return;

@@ -4,6 +4,7 @@ import { UsageStore } from "./usageStore";
 
 const settings: PluginActivitySettings = {
   trackingEnabled: true,
+  excludeRenderActivities: false,
   retentionDays: 90,
   showDisabledPlugins: true,
   openOnStartup: false,

@@ -228,7 +228,7 @@ export function installGlobalTrackingHooks(): void {
 
           markTrackableInteraction(pluginId, "markdown-post-processor");
           const wrapped: typeof postProcessor = (element, context) => {
-            recordPluginActivity(pluginId);
+            recordPluginActivity(pluginId, "render");
             return postProcessor(element, context);
           };
 
@@ -244,7 +244,7 @@ export function installGlobalTrackingHooks(): void {
 
           markTrackableInteraction(pluginId, "markdown-code-block");
           const wrapped: typeof handler = (source, element, context) => {
-            recordPluginActivity(pluginId);
+            recordPluginActivity(pluginId, "render");
             return handler(source, element, context);
           };
 

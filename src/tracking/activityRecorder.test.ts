@@ -28,9 +28,11 @@ describe("activityRecorder", () => {
 
     recordPluginActivity("quickadd", "command");
     recordPluginActivity("quickadd", "interaction");
+    recordPluginActivity("quickadd", "render");
 
-    expect(recorder).toHaveBeenCalledTimes(2);
+    expect(recorder).toHaveBeenCalledTimes(3);
     expect(recorder).toHaveBeenNthCalledWith(1, "quickadd", "command");
     expect(recorder).toHaveBeenNthCalledWith(2, "quickadd", "interaction");
+    expect(recorder).toHaveBeenNthCalledWith(3, "quickadd", "render");
   });
 });

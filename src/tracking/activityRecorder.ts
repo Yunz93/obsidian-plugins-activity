@@ -1,7 +1,7 @@
 const SELF_PLUGIN_ID = "plugins-activity";
 const DEDUP_WINDOW_MS = 100;
 
-export type ActivityKind = "command" | "interaction";
+export type ActivityKind = "command" | "interaction" | "render";
 
 let recordActivity: ((pluginId: string, kind: ActivityKind) => void) | null = null;
 const recentActivity = new Map<string, number>();
