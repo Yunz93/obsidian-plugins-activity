@@ -1,7 +1,7 @@
 {
   "id": "plugins-activity",
   "name": "Extensions-Activity",
-  "version": "0.1.7",
+  "version": "0.2.0",
   "minAppVersion": "1.5.0",
   "description": "Track command, view, and interaction usage for installed community extensions with a local overview page.",
   "author": "Yunz",
