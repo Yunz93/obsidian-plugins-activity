@@ -10,6 +10,7 @@ import { PluginUpdateService } from "./updates/pluginUpdateService";
 import type { PluginSnapshot } from "./types/usage";
 
 import { OverviewModal } from "./ui/OverviewModal";
+import { WhatsNewModal } from "./ui/WhatsNewModal";
 
 installGlobalTrackingHooks();
 
@@ -44,6 +45,14 @@ export default class PluginsActivityPlugin extends Plugin {
       },
     });
 
+    this.addCommand({
+      id: "show-whats-new",
+      name: t("whatsNewCommand"),
+      callback: () => {
+        this.openWhatsNew();
+      },
+    });
+
     this.addRibbonIcon("bar-chart-2", t("openOverview"), () => {
       this.openOverview();
     });
@@ -54,6 +63,7 @@ export default class PluginsActivityPlugin extends Plugin {
       this.closeLegacyOverviewLeaves();
       this.usageTracker.start();
       this.usageStore.pruneOldDaily(this.settings.retentionDays);
+      void this.maybeShowWhatsNew();
 
       if (this.settings.openOnStartup) {
         this.openOverview();
@@ -127,6 +137,29 @@ export default class PluginsActivityPlugin extends Plugin {
 
     this.overviewModal = new OverviewModal(this);
     this.overviewModal.open();
+  }
+
+  openWhatsNew(version = this.manifest.version, markAsSeen = false): void {
+    new WhatsNewModal(this.app, this, version, markAsSeen).open();
+  }
+
+  async markWhatsNewSeen(version: string): Promise<void> {
+    this.settings.lastSeenVersion = version;
+    await this.saveSettings();
+  }
+
+  private async maybeShowWhatsNew(): Promise<void> {
+    const currentVersion = this.manifest.version;
+    const lastSeen = this.settings.lastSeenVersion;
+
+    if (!lastSeen) {
+      await this.markWhatsNewSeen(currentVersion);
+      return;
+    }
+
+    if (lastSeen !== currentVersion) {
+      this.openWhatsNew(currentVersion, true);
+    }
   }
 
   openSettings(): void {

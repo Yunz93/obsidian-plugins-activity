@@ -80,6 +80,9 @@ export const messages = {
     daysAgo: "{count} d ago",
     passiveUnsupported: "Passive plugin; daily usage cannot be tracked with the current method",
     noTrackableSurface: "No commands, views, or trackable interactions to measure",
+    whatsNewTitle: "What's new",
+    whatsNewGotIt: "Got it",
+    whatsNewCommand: "Show what's new",
   },
   zh: {
     openOverview: "打开插件使用总览",
@@ -160,6 +163,9 @@ export const messages = {
     daysAgo: "{count} 天前",
     passiveUnsupported: "被动生效，当前方案无法统计日常使用",
     noTrackableSurface: "无命令/视图/可追踪交互，当前方案无法统计",
+    whatsNewTitle: "新功能",
+    whatsNewGotIt: "知道了",
+    whatsNewCommand: "查看新功能",
   },
 } as const;
 

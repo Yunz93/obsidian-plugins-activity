@@ -768,6 +768,26 @@
   }
 }
 
+.obsidian-plugins-activity-whats-new h2 {
+  margin: 0 0 4px;
+}
+
+.obsidian-plugins-activity-whats-new-version {
+  margin: 0 0 14px;
+  color: var(--pa-muted);
+  font-size: var(--font-ui-smaller);
+}
+
+.obsidian-plugins-activity-whats-new-list {
+  margin: 0 0 16px;
+  padding-left: 1.2em;
+  line-height: 1.5;
+}
+
+.obsidian-plugins-activity-whats-new-list li + li {
+  margin-top: 6px;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .obsidian-plugins-activity-toolbar button,
   .obsidian-plugins-activity-row-actions button {

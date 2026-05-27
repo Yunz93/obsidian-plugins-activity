@@ -4,6 +4,7 @@ export interface PluginActivitySettings {
   retentionDays: number;
   showDisabledPlugins: boolean;
   openOnStartup: boolean;
+  lastSeenVersion?: string;
 }
 
 export const DEFAULT_SETTINGS: PluginActivitySettings = {
