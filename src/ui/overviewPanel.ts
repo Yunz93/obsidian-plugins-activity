@@ -4,6 +4,12 @@ import { formatRelativeTime, getLocale, getSortLocale, t } from "../i18n";
 import type PluginsActivityPlugin from "../main";
 import { isTrackingSupported, getTrackingUnsupportedReason } from "../tracking/trackability";
 import { ConfirmResetModal } from "./ConfirmResetModal";
+import {
+  getDefaultColumnWidths,
+  getMinColumnWidths,
+  TABLE_COLUMNS,
+  type TableColumn,
+} from "./columnWidths";
 import { getUpdateButtonState } from "../updates/updateButton";
 import {
   sumDailyUsage,
@@ -25,33 +31,8 @@ const SORTABLE_COLUMNS: SortColumn[] = [
   "last7DaysTotal",
 ];
 
-type TableColumn = SortColumn | "actions";
-
-const TABLE_COLUMNS: TableColumn[] = [...SORTABLE_COLUMNS, "actions"];
-
-const DEFAULT_COLUMN_WIDTHS: Record<TableColumn, number> = {
-  name: 25,
-  enabled: 9,
-  version: 8,
-  commandCount: 8,
-  interactionCount: 8,
-  viewOpenCount: 8,
-  lastUsedAt: 11,
-  last7DaysTotal: 8,
-  actions: 15,
-};
-
-const MIN_COLUMN_WIDTHS: Record<TableColumn, number> = {
-  name: 12,
-  enabled: 7,
-  version: 6,
-  commandCount: 6,
-  interactionCount: 6,
-  viewOpenCount: 6,
-  lastUsedAt: 8,
-  last7DaysTotal: 6,
-  actions: 13,
-};
+const DEFAULT_COLUMN_WIDTHS = getDefaultColumnWidths();
+const MIN_COLUMN_WIDTHS = getMinColumnWidths();
 
 type RegisterDomEvent = <K extends keyof HTMLElementEventMap>(
   el: HTMLElement,
