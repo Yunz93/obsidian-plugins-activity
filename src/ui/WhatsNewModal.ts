@@ -18,7 +18,9 @@ export class WhatsNewModal extends Modal {
     contentEl.empty();
     contentEl.addClass("obsidian-plugins-activity-whats-new");
 
-    contentEl.createEl("h2", { text: t("whatsNewTitle") });
+    contentEl.createEl("h2", {
+      text: t("whatsNewTitle", { name: this.plugin.manifest.name }),
+    });
     contentEl.createEl("p", {
       cls: "obsidian-plugins-activity-whats-new-version",
       text: `v${this.version}`,
