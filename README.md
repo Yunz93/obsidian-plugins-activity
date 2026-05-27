@@ -15,6 +15,7 @@ All data stays on your device. Nothing is uploaded.
 - **Tracks third-party plugin usage locally** — See how often you run commands, open plugin views, and interact with supported plugins.
 - **Shows a full overview in one place** — Browse all installed third-party plugins with search, sorting, and summary stats.
 - **Highlights recent activity** — Check last used time and 7-day totals for each plugin.
+- **Shows plugin update status** — Summarize Obsidian's own community plugin update check and jump to the official update page.
 - **Keeps a daily history** — Usage is grouped by day, with older data cleaned up automatically based on your preference.
 - **Lists plugin details** — View plugin name, version, author, and whether it is currently enabled.
 - **Explains untrackable plugins** — Some passive plugins cannot be measured reliably; the overview tells you when that happens.
@@ -51,6 +52,7 @@ Find these under **Settings → Extensions-Activity**:
 
 - All statistics are saved locally in your vault.
 - No analytics or telemetry are sent anywhere.
+- Update checks use Obsidian's existing community plugin update mechanism.
 - You can pause tracking or delete all data at any time.
 
 ## License

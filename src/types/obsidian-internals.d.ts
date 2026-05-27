@@ -28,9 +28,18 @@ export interface PluginsInternalApi {
   manifests: Record<string, PluginManifest>;
   enabledPlugins: Set<string>;
   plugins: Record<string, Plugin>;
+  updates?: Record<string, PluginUpdateInfo>;
+  checkForUpdates(): Promise<void>;
+  installPlugin(repo: string, version: string, manifest?: PluginManifest): Promise<void>;
   enablePluginAndSave(id: string): Promise<void>;
   disablePluginAndSave(id: string): Promise<void>;
   uninstallPlugin(id: string): Promise<void>;
+}
+
+export interface PluginUpdateInfo {
+  repo: string;
+  version: string;
+  manifest?: PluginManifest;
 }
 
 export interface CommandRegistryEntry {

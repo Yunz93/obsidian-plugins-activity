@@ -1,9 +1,10 @@
 import { Notice, type App } from "obsidian";
 import { getColumnLabel } from "../i18n/columns";
-import { formatRelativeTime, getSortLocale, t } from "../i18n";
+import { formatRelativeTime, getLocale, getSortLocale, t } from "../i18n";
 import type PluginsActivityPlugin from "../main";
 import { isTrackingSupported, getTrackingUnsupportedReason } from "../tracking/trackability";
 import { ConfirmResetModal } from "./ConfirmResetModal";
+import { getUpdateButtonState } from "../updates/updateButton";
 import {
   sumDailyUsage,
   type PluginUsageRow,
@@ -24,6 +25,34 @@ const SORTABLE_COLUMNS: SortColumn[] = [
   "last7DaysTotal",
 ];
 
+type TableColumn = SortColumn | "actions";
+
+const TABLE_COLUMNS: TableColumn[] = [...SORTABLE_COLUMNS, "actions"];
+
+const DEFAULT_COLUMN_WIDTHS: Record<TableColumn, number> = {
+  name: 25,
+  enabled: 9,
+  version: 8,
+  commandCount: 8,
+  interactionCount: 8,
+  viewOpenCount: 8,
+  lastUsedAt: 11,
+  last7DaysTotal: 8,
+  actions: 15,
+};
+
+const MIN_COLUMN_WIDTHS: Record<TableColumn, number> = {
+  name: 12,
+  enabled: 7,
+  version: 6,
+  commandCount: 6,
+  interactionCount: 6,
+  viewOpenCount: 6,
+  lastUsedAt: 8,
+  last7DaysTotal: 6,
+  actions: 13,
+};
+
 type RegisterDomEvent = <K extends keyof HTMLElementEventMap>(
   el: HTMLElement,
   type: K,
@@ -36,6 +65,8 @@ export class OverviewPanel {
   private sortColumn: SortColumn = "lastUsedAt";
   private sortDirection: SortDirection = "desc";
   private rows: PluginUsageRow[] = [];
+  private columnWidths: Record<TableColumn, number> = { ...DEFAULT_COLUMN_WIDTHS };
+  private isResizingColumn = false;
 
   constructor(
     private readonly app: App,
@@ -51,6 +82,9 @@ export class OverviewPanel {
   render(root: HTMLElement): void {
     root.empty();
     root.addClass("obsidian-plugins-activity-overview");
+    root.toggleClass("is-locale-en", getLocale() === "en");
+    root.toggleClass("is-locale-zh", getLocale() === "zh");
+    this.applyColumnWidths(root);
 
     this.rows = this.plugin.usageStore
       .getMergedRows(
@@ -109,6 +143,21 @@ export class OverviewPanel {
           await this.refresh(root);
         },
       ).open();
+    });
+
+    const checkUpdatesButton = buttonRow.createEl("button", { text: t("checkUpdates") });
+    this.registerDomEvent(checkUpdatesButton, "click", async () => {
+      checkUpdatesButton.disabled = true;
+      checkUpdatesButton.setText(t("checkingUpdates"));
+      try {
+        await this.plugin.checkPluginUpdates();
+        new Notice(t("updateCheckComplete"));
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        new Notice(t("updateCheckFailedWithMessage", { message }));
+      } finally {
+        await this.refresh(root);
+      }
     });
 
     const settingsButton = buttonRow.createEl("button", { text: t("settings") });
@@ -195,11 +244,21 @@ export class OverviewPanel {
     }
 
     const table = wrap.createEl("table", { cls: "obsidian-plugins-activity-table" });
+    const colgroup = table.createEl("colgroup");
+    for (const column of TABLE_COLUMNS) {
+      colgroup.createEl("col", {
+        attr: {
+          style: `width: var(--obsidian-plugins-activity-col-${column});`,
+        },
+      });
+    }
+
     const thead = table.createEl("thead");
     const headerRow = thead.createEl("tr");
 
     for (const column of SORTABLE_COLUMNS) {
       const th = headerRow.createEl("th");
+      th.dataset.col = column;
       if (this.isNumericColumn(column)) {
         th.addClass("obsidian-plugins-activity-table-number");
       }
@@ -212,7 +271,18 @@ export class OverviewPanel {
         indicator.setText("↕");
       }
 
-      this.registerDomEvent(th, "click", () => {
+      this.renderColumnResizeHandle(th, column, root);
+
+      this.registerDomEvent(th, "click", (event) => {
+        const target = event.target;
+        if (
+          this.isResizingColumn ||
+          (target instanceof HTMLElement &&
+            target.closest(".obsidian-plugins-activity-column-resizer"))
+        ) {
+          return;
+        }
+
         if (this.sortColumn === column) {
           this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
         } else {
@@ -223,7 +293,8 @@ export class OverviewPanel {
       });
     }
 
-    headerRow.createEl("th", { text: t("actions") });
+    const actionsHeader = headerRow.createEl("th", { text: t("actions") });
+    actionsHeader.dataset.col = "actions";
 
     const tbody = table.createEl("tbody");
     for (const row of this.sortRows(filteredRows)) {
@@ -259,6 +330,92 @@ export class OverviewPanel {
       this.sortDirection = this.sortDirection === "asc" ? "desc" : "asc";
       this.renderTable(root);
     });
+  }
+
+  private applyColumnWidths(root: HTMLElement): void {
+    for (const column of TABLE_COLUMNS) {
+      root.style.setProperty(
+        `--obsidian-plugins-activity-col-${column}`,
+        `${this.columnWidths[column]}%`,
+      );
+    }
+  }
+
+  private renderColumnResizeHandle(
+    header: HTMLTableCellElement,
+    column: TableColumn,
+    root: HTMLElement,
+  ): void {
+    const nextColumn = this.getNextColumn(column);
+    if (!nextColumn) {
+      return;
+    }
+
+    const handle = header.createSpan({
+      cls: "obsidian-plugins-activity-column-resizer",
+      attr: {
+        "aria-hidden": "true",
+      },
+    });
+
+    this.registerDomEvent(handle, "pointerdown", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      const table = header.closest("table");
+      if (!(table instanceof HTMLTableElement)) {
+        return;
+      }
+
+      const tableWidth = table.getBoundingClientRect().width;
+      if (tableWidth <= 0) {
+        return;
+      }
+
+      const startX = event.clientX;
+      const startWidth = this.columnWidths[column];
+      const startNextWidth = this.columnWidths[nextColumn];
+      const combinedWidth = startWidth + startNextWidth;
+      const minWidth = MIN_COLUMN_WIDTHS[column];
+      const nextMinWidth = MIN_COLUMN_WIDTHS[nextColumn];
+
+      this.isResizingColumn = true;
+      table.addClass("is-resizing-columns");
+
+      const onPointerMove = (moveEvent: PointerEvent) => {
+        const delta = ((moveEvent.clientX - startX) / tableWidth) * 100;
+        const nextWidth = this.clampWidth(
+          startWidth + delta,
+          minWidth,
+          combinedWidth - nextMinWidth,
+        );
+
+        this.columnWidths[column] = nextWidth;
+        this.columnWidths[nextColumn] = combinedWidth - nextWidth;
+        this.applyColumnWidths(root);
+      };
+
+      const onPointerUp = () => {
+        window.removeEventListener("pointermove", onPointerMove);
+        window.removeEventListener("pointerup", onPointerUp);
+        table.removeClass("is-resizing-columns");
+        window.setTimeout(() => {
+          this.isResizingColumn = false;
+        }, 0);
+      };
+
+      window.addEventListener("pointermove", onPointerMove);
+      window.addEventListener("pointerup", onPointerUp, { once: true });
+    });
+  }
+
+  private getNextColumn(column: TableColumn): TableColumn | null {
+    const index = TABLE_COLUMNS.indexOf(column);
+    return index >= 0 ? TABLE_COLUMNS[index + 1] ?? null : null;
+  }
+
+  private clampWidth(value: number, min: number, max: number): number {
+    return Math.min(Math.max(value, min), max);
   }
 
   private getFilteredRows(): PluginUsageRow[] {
@@ -366,6 +523,8 @@ export class OverviewPanel {
     const isSelf = row.id === SELF_PLUGIN_ID;
 
     if (!isSelf) {
+      this.renderUpdateButton(actions, row, root);
+
       const toggleButton = actions.createEl("button", {
         text: row.enabled ? t("disable") : t("enable"),
       });
@@ -386,6 +545,35 @@ export class OverviewPanel {
         ).open();
       });
     }
+  }
+
+  private renderUpdateButton(actions: HTMLElement, row: PluginUsageRow, root: HTMLElement): void {
+    const status = this.plugin.updateService.getStatus(row.id);
+    const buttonState = getUpdateButtonState(status);
+    const updateButton = actions.createEl("button", {
+      text: t(buttonState.labelKey),
+    });
+    updateButton.disabled = buttonState.disabled;
+    updateButton.title = t(buttonState.titleKey);
+    if (status.kind === "available") {
+      updateButton.addClass("mod-cta");
+    }
+    this.registerDomEvent(updateButton, "click", async () => {
+      if (buttonState.disabled) {
+        return;
+      }
+
+      updateButton.disabled = true;
+      updateButton.setText(t("checkingUpdates"));
+      try {
+        await this.plugin.updatePlugin(row.id);
+        new Notice(t("pluginUpdated", { name: row.name }));
+        await this.refresh(root);
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error);
+        new Notice(t("updatePluginFailed", { message }));
+      }
+    });
   }
 
   private async togglePluginEnabled(row: PluginUsageRow, root: HTMLElement): Promise<void> {

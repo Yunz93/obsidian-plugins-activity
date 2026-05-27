@@ -6,6 +6,8 @@ import { PluginActivitySettingTab } from "./settings/SettingsTab";
 import { UsageStore } from "./tracking/usageStore";
 import { UsageTracker } from "./tracking/usageTracker";
 import { installGlobalTrackingHooks } from "./tracking/pluginApiHooks";
+import { PluginUpdateService } from "./updates/pluginUpdateService";
+import type { PluginSnapshot } from "./types/usage";
 
 import { OverviewModal } from "./ui/OverviewModal";
 
@@ -15,6 +17,7 @@ export default class PluginsActivityPlugin extends Plugin {
   settings!: PluginActivitySettings;
   usageStore!: UsageStore;
   usageTracker!: UsageTracker;
+  updateService!: PluginUpdateService;
   private overviewModal: OverviewModal | null = null;
 
   async onload(): Promise<void> {
@@ -26,6 +29,12 @@ export default class PluginsActivityPlugin extends Plugin {
 
     this.usageTracker = new UsageTracker(this);
     this.usageTracker.installEarlyHooks();
+    this.updateService = new PluginUpdateService({
+      plugins: this.app.plugins,
+      onStatusChanged: () => {
+        this.scheduleOverviewRefresh();
+      },
+    });
 
     this.addCommand({
       id: "open-overview",
@@ -124,6 +133,19 @@ export default class PluginsActivityPlugin extends Plugin {
     openPluginSettings(this.app.setting, this.manifest.id, () => {
       this.overviewModal?.close();
     });
+  }
+
+  async checkPluginUpdates(): Promise<void> {
+    await this.updateService.checkNow(() => this.getPluginSnapshotsForUpdateCheck());
+  }
+
+  async updatePlugin(pluginId: string): Promise<void> {
+    await this.updateService.updatePlugin(pluginId);
+  }
+
+  private async getPluginSnapshotsForUpdateCheck(): Promise<PluginSnapshot[]> {
+    const inventory = await this.usageTracker.refreshInventory();
+    return inventory.snapshots;
   }
 
   private closeLegacyOverviewLeaves(): void {
