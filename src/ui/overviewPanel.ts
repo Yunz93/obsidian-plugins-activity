@@ -406,9 +406,9 @@ export class OverviewPanel {
 
   private async uninstallPlugin(row: PluginUsageRow, root: HTMLElement): Promise<void> {
     try {
+      await this.app.plugins.uninstallPlugin(row.id);
       this.plugin.usageStore.resetPlugin(row.id);
       await this.plugin.usageStore.flush();
-      await this.app.plugins.uninstallPlugin(row.id);
       new Notice(t("pluginUninstalled", { name: row.name }));
       await this.refresh(root);
     } catch (error) {

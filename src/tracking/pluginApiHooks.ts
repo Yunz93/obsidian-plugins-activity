@@ -56,7 +56,12 @@ function shouldRecordDomEvent(event: Event): boolean {
   return true;
 }
 
-function wrapEditorExtensionValue(pluginId: string, value: unknown): unknown {
+type RunnableEditorExtension = {
+  run: (...args: unknown[]) => unknown;
+  __pluginsActivityWrapped?: boolean;
+};
+
+export function wrapEditorExtensionValue(pluginId: string, value: unknown): unknown {
   if (value == null) {
     return value;
   }
@@ -66,18 +71,42 @@ function wrapEditorExtensionValue(pluginId: string, value: unknown): unknown {
   }
 
   if (typeof value === "object") {
-    const spec = value as { run?: (...args: unknown[]) => unknown; __pluginsActivityWrapped?: boolean };
-    if (typeof spec.run === "function" && !spec.__pluginsActivityWrapped) {
-      const original = spec.run;
-      return {
-        ...spec,
-        __pluginsActivityWrapped: true,
-        run: (...args: unknown[]) => {
-          recordPluginActivity(pluginId);
-          return original.apply(spec, args);
-        },
-      };
-    }
+    return wrapRunnableEditorExtension(pluginId, value);
+  }
+
+  return value;
+}
+
+function wrapRunnableEditorExtension(pluginId: string, value: object): object {
+  const spec = value as Partial<RunnableEditorExtension>;
+  if (typeof spec.run !== "function" || spec.__pluginsActivityWrapped) {
+    return value;
+  }
+  if (!Object.isExtensible(value)) {
+    return value;
+  }
+
+  const runDescriptor = Object.getOwnPropertyDescriptor(value, "run");
+  if (runDescriptor && runDescriptor.configurable === false && runDescriptor.writable !== true) {
+    return value;
+  }
+
+  const original = spec.run;
+  try {
+    Object.defineProperty(value, "run", {
+      configurable: true,
+      writable: true,
+      value(this: unknown, ...args: unknown[]) {
+        recordPluginActivity(pluginId);
+        return original.apply(this, args);
+      },
+    });
+    Object.defineProperty(value, "__pluginsActivityWrapped", {
+      configurable: true,
+      value: true,
+    });
+  } catch {
+    return value;
   }
 
   return value;
