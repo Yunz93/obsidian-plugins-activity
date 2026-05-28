@@ -401,11 +401,20 @@
   background: var(--background-modifier-border);
 }
 
+.obsidian-plugins-activity-table td[data-col="name"] {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: unset;
+}
+
 .obsidian-plugins-activity-trackability-hint {
   color: var(--text-faint);
   font-size: var(--font-ui-smaller);
   margin-top: 4px;
   line-height: 1.35;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .obsidian-plugins-activity-table .sort-indicator {
@@ -422,18 +431,21 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-width: 64px;
+  box-sizing: border-box;
+  max-width: 100%;
+  min-width: 0;
   padding: 2px 8px;
   border-radius: 999px;
   font-size: var(--font-ui-smaller);
   line-height: 1.45;
   text-align: center;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .obsidian-plugins-activity-table td[data-col="enabled"] {
-  overflow: visible;
-  text-overflow: clip;
+  overflow: hidden;
 }
 
 .obsidian-plugins-activity-status.is-enabled {
@@ -504,9 +516,16 @@
   white-space: nowrap;
 }
 
+.obsidian-plugins-activity-table td[data-col]:not([data-col="name"]):not([data-col="actions"]) {
+  text-align: center;
+}
+
 .obsidian-plugins-activity-table-number {
-  text-align: right !important;
   font-variant-numeric: tabular-nums;
+}
+
+.obsidian-plugins-activity-table td.obsidian-plugins-activity-table-number {
+  text-align: center !important;
 }
 
 .obsidian-plugins-activity-toolbar button {

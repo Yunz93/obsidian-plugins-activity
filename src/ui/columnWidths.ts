@@ -38,6 +38,10 @@ const ACTION_BUTTON_KEYS: MessageKey[] = [
   "uninstall",
 ];
 
+const STATUS_VALUE_KEYS: MessageKey[] = ["enabled", "disabled"];
+
+const STATUS_BADGE_PADDING_OVERHEAD = 4;
+
 const HEADER_SORT_OVERHEAD = 2;
 const NAME_CONTENT_BONUS = 12;
 const BUTTON_PADDING_OVERHEAD = 4;
@@ -86,6 +90,19 @@ function getActionsColumnWeight(headerWeight: number): number {
   return Math.max(headerWeight, maxButtonWidth + BUTTON_PADDING_OVERHEAD);
 }
 
+function getStatusColumnWeight(headerWeight: number): number {
+  let maxValueWidth = 0;
+  for (const key of STATUS_VALUE_KEYS) {
+    maxValueWidth = Math.max(
+      maxValueWidth,
+      estimateTextWidth(getLocalizedText(key, "en")),
+      estimateTextWidth(getLocalizedText(key, "zh")),
+    );
+  }
+
+  return Math.max(headerWeight, maxValueWidth + STATUS_BADGE_PADDING_OVERHEAD);
+}
+
 function normalizeWeights(weights: Record<TableColumn, number>): Record<TableColumn, number> {
   const total = TABLE_COLUMNS.reduce((sum, column) => sum + weights[column], 0);
   const widths = {} as Record<TableColumn, number>;
@@ -114,6 +131,7 @@ function buildDefaultWeights(): Record<TableColumn, number> {
   }
 
   weights.name += NAME_CONTENT_BONUS;
+  weights.enabled = getStatusColumnWeight(weights.enabled);
   weights.actions = getActionsColumnWeight(weights.actions);
 
   return weights;
@@ -127,10 +145,13 @@ export function getMinColumnWidths(): Record<TableColumn, number> {
   const headerWeights = {} as Record<TableColumn, number>;
 
   for (const column of TABLE_COLUMNS) {
+    const headerWeight = getHeaderLabelWeight(column);
     headerWeights[column] =
       column === "actions"
-        ? getActionsColumnWeight(getHeaderLabelWeight(column))
-        : getHeaderLabelWeight(column);
+        ? getActionsColumnWeight(headerWeight)
+        : column === "enabled"
+          ? getStatusColumnWeight(headerWeight)
+          : headerWeight;
   }
 
   headerWeights.name = Math.max(headerWeights.name, 8);
