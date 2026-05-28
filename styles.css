@@ -410,8 +410,8 @@
 }
 
 .obsidian-plugins-activity-trackability-hint {
-  color: var(--text-faint);
-  font-size: var(--font-ui-smaller);
+  color: color-mix(in srgb, var(--text-faint) 78%, var(--pa-accent) 22%);
+  font-size: 0.65rem;
   margin-top: 4px;
   line-height: 1.35;
   white-space: normal;
@@ -785,7 +785,7 @@
 
   .obsidian-plugins-activity-trackability-hint {
     margin-top: 6px;
-    font-size: 0.68rem;
+    font-size: 0.6rem;
   }
 }
 
