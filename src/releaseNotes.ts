@@ -8,6 +8,29 @@ export interface ReleaseNoteEntry {
 
 export const RELEASE_NOTES: ReleaseNoteEntry[] = [
   {
+    version: "0.2.2",
+    en: [
+      "Check community plugin updates from the overview (per-plugin and bulk).",
+      "Drag the overview modal and resize table columns.",
+      "Show a What's New dialog after plugin updates.",
+      "Improve table layout: centered metrics, wrapped hints, and contained status badges.",
+      "Stack row action buttons vertically for easier tapping.",
+      "Settings opens correctly instead of staying behind the overview modal.",
+      "Show What's New before the startup overview so release notes stay visible.",
+      "Tone down untrackable-plugin hints and fix CSS lint compatibility issues.",
+    ],
+    zh: [
+      "总览页支持插件更新检查（单插件 + 批量）。",
+      "总览弹窗可拖拽，表格列宽可调整。",
+      "插件更新后自动显示新功能说明。",
+      "优化表格布局：数据居中、说明换行、状态徽章不溢出。",
+      "行内操作按钮纵向排列，更易点击。",
+      "修复设置页被弹窗遮挡的问题。",
+      "启动时先显示新功能说明，避免被总览页遮挡。",
+      "弱化不可统计说明样式，并修复 CSS lint 兼容问题。",
+    ],
+  },
+  {
     version: "0.2.1",
     en: [
       "Center overview metric cells while keeping column headers left-aligned.",
