@@ -8,6 +8,19 @@ export interface ReleaseNoteEntry {
 
 export const RELEASE_NOTES: ReleaseNoteEntry[] = [
   {
+    version: "0.2.1",
+    en: [
+      "Center overview metric cells while keeping column headers left-aligned.",
+      "Wrap long trackability hints in the plugin name column.",
+      "Keep status badges inside the status column and size the column from badge text.",
+    ],
+    zh: [
+      "总览表格数据居中显示，表头保持左对齐。",
+      "插件名列中的不可统计说明支持换行完整显示。",
+      "状态徽章不再溢出到相邻列，并按徽章文案计算列宽。",
+    ],
+  },
+  {
     version: "0.2.0",
     en: [
       "Check community plugin updates from the overview (per-plugin update action and bulk check).",

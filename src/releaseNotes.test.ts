@@ -2,6 +2,13 @@ import { describe, expect, it } from "vitest";
 import { getReleaseNotes, RELEASE_NOTES } from "./releaseNotes";
 
 describe("releaseNotes", () => {
+  it("includes 0.2.1 with non-empty en and zh highlights", () => {
+    const entry = RELEASE_NOTES.find((note) => note.version === "0.2.1");
+    expect(entry).toBeDefined();
+    expect(entry?.en.length).toBeGreaterThan(0);
+    expect(entry?.zh.length).toBeGreaterThan(0);
+  });
+
   it("includes 0.2.0 with non-empty en and zh highlights", () => {
     const entry = RELEASE_NOTES.find((note) => note.version === "0.2.0");
     expect(entry).toBeDefined();
