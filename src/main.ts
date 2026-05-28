@@ -63,11 +63,7 @@ export default class PluginsActivityPlugin extends Plugin {
       this.closeLegacyOverviewLeaves();
       this.usageTracker.start();
       this.usageStore.pruneOldDaily(this.settings.retentionDays);
-      void this.maybeShowWhatsNew();
-
-      if (this.settings.openOnStartup) {
-        this.openOverview();
-      }
+      void this.handleStartupUI();
     });
   }
 
@@ -139,8 +135,12 @@ export default class PluginsActivityPlugin extends Plugin {
     this.overviewModal.open();
   }
 
-  openWhatsNew(version = this.manifest.version, markAsSeen = false): void {
-    new WhatsNewModal(this.app, this, version, markAsSeen).open();
+  openWhatsNew(
+    version = this.manifest.version,
+    markAsSeen = false,
+    onDismissed?: () => void,
+  ): void {
+    new WhatsNewModal(this.app, this, version, markAsSeen, onDismissed).open();
   }
 
   async markWhatsNewSeen(version: string): Promise<void> {
@@ -148,18 +148,33 @@ export default class PluginsActivityPlugin extends Plugin {
     await this.saveSettings();
   }
 
-  private async maybeShowWhatsNew(): Promise<void> {
+  private async handleStartupUI(): Promise<void> {
+    const showedWhatsNew = await this.maybeShowWhatsNew(() => {
+      if (this.settings.openOnStartup) {
+        this.openOverview();
+      }
+    });
+
+    if (this.settings.openOnStartup && !showedWhatsNew) {
+      this.openOverview();
+    }
+  }
+
+  private async maybeShowWhatsNew(onDismissed?: () => void): Promise<boolean> {
     const currentVersion = this.manifest.version;
     const lastSeen = this.settings.lastSeenVersion;
 
     if (!lastSeen) {
       await this.markWhatsNewSeen(currentVersion);
-      return;
+      return false;
     }
 
     if (lastSeen !== currentVersion) {
-      this.openWhatsNew(currentVersion, true);
+      this.openWhatsNew(currentVersion, true, onDismissed);
+      return true;
     }
+
+    return false;
   }
 
   openSettings(): void {

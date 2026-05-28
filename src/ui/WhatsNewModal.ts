@@ -9,6 +9,7 @@ export class WhatsNewModal extends Modal {
     private readonly plugin: PluginsActivityPlugin,
     private readonly version: string,
     private readonly markAsSeen: boolean,
+    private readonly onDismissed?: () => void,
   ) {
     super(app);
   }
@@ -50,5 +51,6 @@ export class WhatsNewModal extends Modal {
 
   onClose(): void {
     this.contentEl.empty();
+    this.onDismissed?.();
   }
 }
