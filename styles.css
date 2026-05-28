@@ -88,7 +88,9 @@
 
 .obsidian-plugins-activity-toolbar-search-row,
 .obsidian-plugins-activity-toolbar-button-row {
-  display: contents;
+  display: flex;
+  gap: 6px;
+  align-items: center;
 }
 
 .obsidian-plugins-activity-search {
@@ -524,8 +526,8 @@
   font-variant-numeric: tabular-nums;
 }
 
-.obsidian-plugins-activity-table td.obsidian-plugins-activity-table-number {
-  text-align: center !important;
+.obsidian-plugins-activity-overview .obsidian-plugins-activity-table td.obsidian-plugins-activity-table-number[data-col] {
+  text-align: center;
 }
 
 .obsidian-plugins-activity-toolbar button {
@@ -685,11 +687,11 @@
     border-bottom: none;
   }
 
-  .obsidian-plugins-activity-table td {
+  .obsidian-plugins-activity-table td[data-col] {
     display: block;
     padding: 0;
     border: none;
-    text-align: left !important;
+    text-align: left;
   }
 
   .obsidian-plugins-activity-table td[data-col="name"] {
@@ -715,7 +717,7 @@
     padding: 6px 4px;
     border-radius: var(--pa-radius-sm);
     background: var(--background-secondary);
-    text-align: center !important;
+    text-align: center;
     font-size: var(--font-ui-smaller);
   }
 
